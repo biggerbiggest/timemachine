@@ -20,10 +20,10 @@ class projectSpider(base_spider.Spider):
     ch_city = '德宏州'
     en_area = 'yunnan'
     en_city = 'dehong'
-    url = 'https://www.lcggzy.gov.cn/jyxx/jsgcZbjggs'
+    url = 'https://jyzx.dh.gov.cn/jyxx/jsgcZbgg'
     type = 0
     headers = {
-        'User-agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
+        'User-agent':'Mozilla/4.0(compatible;MSIE7.0;WindowsNT5.1;Trident/4.0;SE2.XMetaSr1.0;SE2.XMetaSr1.0;.NETCLR2.0.50727;SE2.XMetaSr1.0)',
     }
 
     def start_requests(self):
@@ -36,7 +36,7 @@ class projectSpider(base_spider.Spider):
         #     all_page = config.PAGE_NUM
         # else:
         #     all_page = 71
-        self.redis_util.insert_db(self.name, response.url)
+        # self.redis_util.insert_db(self.name, response.url)
         # all_page = 54
         global ch_region, en_region, all_page
         all_page = 0
@@ -81,12 +81,12 @@ class projectSpider(base_spider.Spider):
                     'bulletinName': '',
                     'secondArea': v,
                 }
-                res = requests.post(self.url, data=form_data, headers=self.headers)
+                res = requests.post(self.url, data=form_data, headers=self.headers, verify=False)
                 con = etree.HTML(res.text)
-                tr_list = con.xpath("//div[@class='news']/table/tr")
+                tr_list = con.xpath("//table[@id='']/tr")
                 tr_list.pop(0)
                 for tr in tr_list:
-                    detail_url = 'https://www.lcggzy.gov.cn' + tr.xpath("./td[2]/a/@href")[0]
+                    detail_url = 'https://jyzx.dh.gov.cn' + tr.xpath("./td[2]/a/@href")[0]
                     pro_date = tr.xpath("./td[3]/text()")[0]
                     # if self.redis_util.get_detail_url(self.name, detail_url, **{'dbnum': self.type}):
                     #     continue
